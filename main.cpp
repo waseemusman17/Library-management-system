@@ -3,42 +3,22 @@
 #include <string.h>
 using namespace std;
 
-// Admin class
-
-class admin{
-private:
-    string id;              //Admin User Name or ID
-    string password;        //Admin Password
-public:
-    void setAdmin(string i,string p){
-        id=i;
-        password=p;
-    }
-    void addLibrarian(){
-        //Make a function to add Librarian
-        //Then Librarian login our id
-
-    }
-    void removeLibrarian(){
-        //That function are use use to remove Librarian
-        //In case of librarian are remove
-        //Only admin remove librarian
-
-    }
-    void showID(){
-
-    }
-};
-
 //Librarian  class
-class librarian : public admin{
+
+class librarian{
 	private:
-		int id;
+		string id;
 		string password;
 	public:
 		void login(){
-			cout<<"Enter the User Id : "<<endl; cin>>Id;
-			cout<<"Enter the Password : "<<endl; cin>>password;
+			cout<<"Enter the User Id : ";
+			cin>>Id;
+			cout<<"Enter the Password : ";\
+            cin>>password;
+		}
+		void setLogin(string i,string p){
+            id=i;
+            password=p;
 		}
 		void AddUser(){
 			//this function will be used to add user by getting its informations
@@ -62,6 +42,26 @@ class librarian : public admin{
 			//this function will used to edit book
 		}
 };
+
+//User Class
+
+class user : public librarian{
+private:
+    string id;
+    string password;
+public:
+    void login(){
+        cout<<"User ID : ";
+        cin>>id;
+        cout<<"Password : ";
+        cin>>password;
+    }
+    void setLogin(string i, string p){
+        id=i;
+        password=p;
+    }
+};
+
 //Book Class
 class book : public librarian{
 private:
@@ -70,11 +70,15 @@ private:
     string code;
     int quantity;
 public:
-    void setBook(string n, string a, string c, int q){
-        name=n;
-        authore=a;
-        code=c;
-        quantity=q;
+    void getBook(){
+        cout<<"Enter the book name : ";
+        cin>>name;
+        cout<<"Enter the author name : ";
+        cin>>author;
+        cout<<"Enter the code : ";
+        cin>>code;
+        cout<<"Enter the quantity : ";
+        cin>>quantity;
     }
     void issue(){
         //That function are use to this book are issue or not
@@ -87,7 +91,39 @@ public:
         //The function are to edit book
         //Like change name,author,code etc
     }
+    void noBook(){
+        //That function are use to show total number of books in library
+        //The book may be issue or not.
+    }
 };
+
+// Admin class
+
+class admin : public librarian{
+private:
+    string id;              //Admin User Name or ID
+    string password;        //Admin Password
+public:
+    void setAdmin(string i,string p){
+        id=i;
+        password=p;
+    }
+    void addLibrarian(){
+        //Make a function to add Librarian
+        //Then Librarian login our id
+
+    }
+    void removeLibrarian(){
+        //That function are use use to remove Librarian
+        //In case of librarian are remove
+        //Only admin remove librarian
+
+    }
+    void showInfo(){
+        //This function are use view all information in program
+    }
+};
+
 int main(){
 
 }
