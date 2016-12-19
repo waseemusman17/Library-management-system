@@ -1,9 +1,0 @@
-# depslib dependency file v1.0
-1480101137 source:c:\users\hp 8470\desktop\lms\main.cpp
-	<iostream>
-	<string.h>
-
-1480430415 source:c:\users\hp 8470\desktop\library-management-system\main.cpp
-	<iostream>
-	<string.h>
-
