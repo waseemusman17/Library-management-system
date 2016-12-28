@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class Librarian{
+class admin{
     char ID_number[20];
     char Student_name[20];
     char stbno[6];
@@ -100,10 +100,18 @@ public:
     }
 };
 
+class student : public admin{
+
+public:
+    show_student();
+    show_book();
+};
+
 
 fstream fp,fp1;
 book bk;
-Librarian st;
+admin adm;
+student st;
 
 void write_book(){
     system("cls");
@@ -126,8 +134,8 @@ void write_student(){
     fp.open("student.dat",ios::out|ios::app);
 
     do{
-        st.create_student();
-        fp.write((char*)&st,sizeof(Librarian));
+        adm.create_student();
+        fp.write((char*)&adm,sizeof(admin));
         cout<<"\nPress 1 to add more students.";
         cout<<"\nPress 2 to return to main menu.\n";
         cout<<"Enter: ";
@@ -158,9 +166,9 @@ void display_a_student(char n[]){
     int check=0;
     fp.open("student.dat",ios::in);
 
-    while(fp.read((char*)&st,sizeof(Librarian))){
-        if((strcmp(st.get_ID_number(),n)==0)){
-            st.show_student();
+    while(fp.read((char*)&adm,sizeof(admin))){
+        if((strcmp(adm.get_ID_number(),n)==0)){
+            adm.show_student();
             check=1;
         }
     }
@@ -206,14 +214,14 @@ void modify_student()
     cin>>n;
     fp.open("student.dat",ios::in|ios::out);
 
-    while(fp.read((char*)&st,sizeof(Librarian)) && found==0){
-        if(strcmp(st.get_ID_number(),n)==0){
-            st.show_student();
+    while(fp.read((char*)&adm,sizeof(admin)) && found==0){
+        if(strcmp(adm.get_ID_number(),n)==0){
+            adm.show_student();
             cout<<"\nEnter The New Details of student"<<endl;
-            st.modify_student();
-            int pos=-1*sizeof(st);
+            adm.modify_student();
+            int pos=-1*sizeof(adm);
             fp.seekp(pos,ios::cur);
-            fp.write((char*)&st,sizeof(Librarian));
+            fp.write((char*)&adm,sizeof(admin));
             cout<<"\n\n\t Record Updated Successfully...";
             found=1;
         }
@@ -236,9 +244,9 @@ void delete_student()
     fp2.open("Temp.dat",ios::out);
     fp.seekg(0,ios::beg);
 
-        while(fp.read((char*)&st,sizeof(Librarian))){
-            if(strcmp(st.get_ID_number(),n)!=0)
-                fp2.write((char*)&st,sizeof(Librarian));
+        while(fp.read((char*)&adm,sizeof(admin))){
+            if(strcmp(adm.get_ID_number(),n)!=0)
+                fp2.write((char*)&adm,sizeof(admin));
             else
                 flag=1;
         }
@@ -294,8 +302,8 @@ void display_all_students()
     cout<<"==================================================================\n";
     cout<<"\tID Number."<<setw(10)<<"Name"<<setw(20)<<"Book Issued\n";
     cout<<"==================================================================\n";
-        while(fp.read((char*)&st,sizeof(Librarian))){
-            st.report();
+        while(fp.read((char*)&adm,sizeof(admin))){
+            adm.report();
         }
         fp.close();
         getch();
@@ -330,21 +338,21 @@ void issue_book()
     fp.open("student.dat",ios::in|ios::out);
     fp1.open("book.dat",ios::in|ios::out);
 
-        while(fp.read((char*)&st,sizeof(Librarian)) && found==0){
-            if(strcmp(st.get_ID_number(),sn)==0){
+        while(fp.read((char*)&adm,sizeof(admin)) && found==0){
+            if(strcmp(adm.get_ID_number(),sn)==0){
                 found=1;
-                if(st.rettoken()==0){
+                if(adm.rettoken()==0){
                     cout<<"\n\n\tEnter book number: ";
                     cin>>bn;
                     while(fp1.read((char*)&bk,sizeof(book))&& flag==0){
                         if(strcmp(bk.getbooknumber(),bn)==0){
                             bk.show_book();
                             flag=1;
-                            st.addtoken();
-                            st.getstbno(bk.getbooknumber());
-                            int pos=-1*sizeof(st);
+                            adm.addtoken();
+                            adm.getstbno(bk.getbooknumber());
+                            int pos=-1*sizeof(adm);
                             fp.seekp(pos,ios::cur);
-                            fp.write((char*)&st,sizeof(Librarian));
+                            fp.write((char*)&adm,sizeof(admin));
                             cout<<"\n\n\t Book issued successfully...";
                         }
                     }
@@ -371,12 +379,12 @@ void book_return(){
     cin>>sn;
     fp.open("student.dat",ios::in|ios::out);
     fp1.open("book.dat",ios::in|ios::out);
-        while(fp.read((char*)&st,sizeof(Librarian)) && found==0){
-            if(strcmp(st.get_ID_number(),sn)==0){
+        while(fp.read((char*)&adm,sizeof(admin)) && found==0){
+            if(strcmp(adm.get_ID_number(),sn)==0){
                 found=1;
-                if(st.rettoken()==1){
+                if(adm.rettoken()==1){
                     while(fp1.read((char*)&bk,sizeof(book))&& flag==0){
-                        if(strcmp(bk.getbooknumber(),st.retstbno())==0){
+                        if(strcmp(bk.getbooknumber(),adm.retstbno())==0){
                             bk.show_book();
                             flag=1;
                             cout<<"\n\nBook returned in no. of days : ";
@@ -387,10 +395,10 @@ void book_return(){
                                 cout<<"\n\nThe Book is last. You have to pay a fine of  "<<fine;
                             }
 
-                            st.resettoken();
-                            int pos=-1*sizeof(st);
+                            adm.resettoken();
+                            int pos=-1*sizeof(adm);
                             fp.seekp(pos,ios::cur);
-                            fp.write((char*)&st,sizeof(Librarian));
+                            fp.write((char*)&adm,sizeof(admin));
                             cout<<"\n\n\t Book returned successfully...";
                         }
                     }
@@ -412,11 +420,13 @@ void book_return(){
   }
 void intro()
 {
-     system("color 05");
-     system("cls");
-     cout<<"\n\t\t\t\t\t--------------------------------------\n";
-     cout<<"\t\t\t\t\t WELCOME TO LIBRARY MANAGEMENT SYSTEM\n";
-     cout<<"\t\t\t\t\t--------------------------------------";
+
+    system("color 02"); //For Text color
+
+    system("cls");
+    cout<<"\n\t\t\t\t\t--------------------------------------\n";
+    cout<<"\t\t\t\t\t WELCOME TO LIBRARY MANAGEMENT SYSTEM\n";
+    cout<<"\t\t\t\t\t--------------------------------------";
 }
 void book_menu()
 {
@@ -498,43 +508,109 @@ void student_menu()
                 cout<<"\a";
         }
 }
-int main(){
+void Librarian(){
     int option = 0;
-        for(;;){
-            intro();
-            cout<<"\n\t\t---------------------------------------";
-            cout<<"\n\t\tPress 1 to ISSUE BOOKS";
-            cout<<"\n\t\tPress 2 to RETURN BOOKS";
-            cout<<"\n\t\tPress 3 to UPDATE STUDENT RECORDS";
-            cout<<"\n\t\tPress 4 to UPDATE BOOK RECORDS";
-            cout<<"\n\t\tPress 5 to TO EXIT";
-            cout<<"\n\t\t--------------------------------------\n";
-            cout<<"\n\t\tOption: ";
-            cin>>option;
+    for(;;){
+        intro();
+        cout<<"\n\t\t---------------------------------------";
+        cout<<"\n\t\tPress 1 to ISSUE BOOKS";
+        cout<<"\n\t\tPress 2 to RETURN BOOKS";
+        cout<<"\n\t\tPress 3 to UPDATE STUDENT RECORDS";
+        cout<<"\n\t\tPress 4 to UPDATE BOOK RECORDS";
+        cout<<"\n\t\tPress 5 to TO EXIT";
+        cout<<"\n\t\t--------------------------------------\n";
+        cout<<"\n\t\tOption: ";
+        cin>>option;
 
-                switch(option){
-                    case 1:
-                        system("cls");
-                        issue_book();
-                        break;
-                    case 2:
-                        system("cls");
-                        book_return();
-                        break;
-                    case 3:
-                        system("cls");
-                        student_menu();
-                        break;
-                    case 4:
-                        system("cls");
-                        book_menu();
-                        break;
-                    case 5:
-                        exit(0);
-                        break;
-                        default :
-                        cout<<"\a";
-                        exit(0);
-                    }
-          }
+        switch(option){
+            case 1:
+                system("cls");
+                issue_book();
+                break;
+            case 2:
+                system("cls");
+                book_return();
+                break;
+            case 3:
+                system("cls");
+                student_menu();
+                break;
+            case 4:
+                system("cls");
+                book_menu();
+                break;
+            case 5:
+
+                break;
+            default :
+                cout<<"\a";
+            }
+    }
+}
+void user(){
+    int num;
+    intro();
+    cout<<"\n\t\t---------------------------------------";
+    cout<<"\n\t\t\tStudent Profile\n";
+    cout<<"\n\t\tPress 1 Info of Student";
+    cout<<"\n\t\tPress 2 List of book";
+    cout<<"\n\t\tPress 3 to back main menu.";
+    cout<<"\n\t\t---------------------------------------";
+    cout<<"\n\t\tOption: ";
+    cin>>num;
+
+    switch(num){
+    case 1:
+        char num[20];
+        system("cls");
+        cout<<"\n\n\tPlease Enter The ID Number: ";
+        cin>>num;
+        display_a_student(num);
+        break;
+    case 2:
+        system("cls");
+        display_allb();
+        break;
+    case 3:
+
+        break;
+    default :
+        cout<<"\a";
+
+    }
+
+}
+int main(){
+    int login = 0;
+    for(;;){
+        intro();
+        cout<<"\n\t\t---------------------------------------";
+        cout<<"\n\t\t\t\tLogIn\n";
+        cout<<"\n\t\tPress 1 LogIn for Admin.";
+        cout<<"\n\t\tPress 2 LogIn for Librarian";
+        cout<<"\n\t\tPress 3 LogIn for Student";
+        cout<<"\n\t\tPress 4 Exit Program";
+        cout<<"\n\t\t---------------------------------------";
+        cout<<"\n\t\tOption: ";
+        cin>>login;
+
+        switch(login){
+        case 1:
+            system("cls");
+        case 2:
+            system("cls");
+            Librarian();
+            break;
+        case 3:
+            system("cls");
+            user();
+            break;
+        case 4:
+            exit(0);
+            break;
+        default:
+            cout<<"\a";
+        }
+    }
+    return 0;
 }
