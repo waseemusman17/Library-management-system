@@ -10,30 +10,18 @@ using namespace std;
 class admin{
     char ID_number[20];
     char Student_name[20];
-    char Librarian_name[20];
+    unsigned int mobile_number;
     char stbno[6];
     int token;
 
 public:
-    void create_librarian(){
-        cout<<"\nEnter The ID Number ";
-        cin>>ID_number;
-        cout<<"\n\nEnter The Name of The Librarian: ";
-        cin>>Librarian_name;
-        token=0;
-        cout<<"\t\t\n\nLibrarian Record Created Successfully...";
-    }
-    void show_Librarian(){
-        cout<<"\nID Number: "<<ID_number;
-        cout<<"\nStudent Name: ";
-        puts(Librarian_name);
-
-    }
     void create_student(){
         cout<<"\nEnter The ID Number ";
         cin>>ID_number;
         cout<<"\n\nEnter The Name of The Student: ";
         cin>>Student_name;
+        cout<<"Enter The Mobile Number: ";
+        cin>>mobile_number;
         token=0;
         stbno[0]='/0';
         cout<<"\t\t\n\nStudent Record Created Successfully...";
@@ -42,6 +30,7 @@ public:
         cout<<"\nID Number: "<<ID_number;
         cout<<"\nStudent Name: ";
         puts(Student_name);
+        cout<<"\nMobile Number: "<<mobile_number;
         cout<<"\nNo of Book issued: "<<token;
 
         if(token==1)
@@ -52,6 +41,7 @@ public:
         cout<<"\nModify Student Name: ";
         cin.ignore();
         cin.getline(Student_name,50);
+
     }
     char* get_ID_number(){
         return ID_number;
@@ -72,23 +62,27 @@ public:
         strcpy(stbno,t);
     }
     void report(){
-        cout<<"\t"<<ID_number<<setw(20)<<Student_name<<setw(10)<<token<<endl;
+        cout<<"\t"<<ID_number<<setw(20)<<Student_name<<setw(15)<<token<<setw(25)<<mobile_number<<endl;
     }
 };
 
 class Librarian : public admin{
 public:
-    create_student();
     show_student();
-    modify_student();
     issue_book();
     book_return();
+};
+class student : public admin{
+
+public:
+    get_ID_number();
+    show_book();
 };
 
 class book{
     char book_number[30];
     char book_name[50];
-    char author_name[20];
+    char author_name[50];
 public:
     void create_book(){
         cout<<"\nEnter The Book Number: ";
@@ -120,15 +114,8 @@ public:
         return book_number;
     }
     void report(){
-        cout<<book_number<<setw(30)<<book_name<<setw(30)<<author_name<<endl;
+        cout<<"\t"<<book_number<<setw(24)<<book_name<<setw(30)<<author_name<<endl;
     }
-};
-
-class student : public admin{
-
-public:
-    show_student();
-    show_book();
 };
 
 
@@ -137,6 +124,9 @@ book bk;
 admin adm;
 student st;
 
+void login(){
+
+}
 void write_book(){
     system("cls");
     int more_or_main;
@@ -319,13 +309,13 @@ void display_all_students()
     fp.open("student.dat",ios::in);
     if(!fp){
         cout<<"ERROR!!! FILE COULD NOT BE OPEN ";
-    getch();
-    return;
+        getch();
+        return;
     }
     cout<<"\n\n\t\tSTUDENT LIST\n\n";
-    cout<<"==================================================================\n";
-    cout<<"\tID Number."<<setw(10)<<"Name"<<setw(20)<<"Book Issued\n";
-    cout<<"==================================================================\n";
+    cout<<"=============================================================================\n";
+    cout<<"\tID Number."<<setw(10)<<"Name"<<setw(20)<<"Book Issued"<<setw(20)<<"Contact\n";
+    cout<<"=============================================================================\n";
         while(fp.read((char*)&adm,sizeof(admin))){
             adm.report();
         }
@@ -343,7 +333,7 @@ void display_allb()
     }
     cout<<"\n\n\t\tBook LIST\n\n";
     cout<<"=========================================================================\n";
-    cout<<"Book Number"<<setw(20)<<"Book Name"<<setw(25)<<"Author\n";
+    cout<<"\tBook Number"<<setw(20)<<"Book Name"<<setw(20)<<"Author\n";
     cout<<"=========================================================================\n";
     while(fp.read((char*)&bk,sizeof(book))){
         bk.report();
@@ -441,7 +431,7 @@ void book_return(){
             system("cls");
             fp.close();
             fp1.close();
-  }
+}
 void intro()
 {
 
@@ -455,7 +445,9 @@ void intro()
 void book_menu()
 {
     int option;
-    cout<<"\t\t-----------------------------------";
+    intro();
+    cout<<"\n\t\t-----------------------------------";
+    cout<<"\n\t\t\t\tBOOKS MENU\n";
     cout<<"\n\t\tPress 1 to CREATE BOOKS";
     cout<<"\n\t\tPress 2 to DISPLAY ALL BOOKS";
     cout<<"\n\t\tPress 3 to DISPLAY SPECIFIC BOOK";
@@ -493,7 +485,9 @@ void book_menu()
 void student_menu()
 {
     int option;
-    cout<<"\t\t---------------------------------------------";
+    intro();
+    cout<<"\n\t\t---------------------------------------------";
+    cout<<"\n\t\t\t\tSTUDENTS Menu\n";
     cout<<"\n\t\tPress 1 to CREATE STUDENT RECORD";
     cout<<"\n\t\tPress 2 to DISPLAY ALL STUDENTS RECORD";
     cout<<"\n\t\tPress 3 to DISPLAY SPECIFIC STUDENT RECORD";
@@ -532,15 +526,16 @@ void student_menu()
                 cout<<"\a";
         }
 }
-void Librarian(){
+void admin(){
     int option;
     intro();
     cout<<"\n\t\t---------------------------------------";
+    cout<<"\n\t\t\t\tAdmin Menu\n";
     cout<<"\n\t\tPress 1 to ISSUE BOOKS";
     cout<<"\n\t\tPress 2 to RETURN BOOKS";
     cout<<"\n\t\tPress 3 to UPDATE STUDENT RECORDS";
     cout<<"\n\t\tPress 4 to UPDATE BOOK RECORDS";
-    cout<<"\n\t\tPress 5 to TO EXIT";
+    cout<<"\n\t\tPress 5 to TO MAIN MENU";
     cout<<"\n\t\t--------------------------------------\n";
     cout<<"\n\t\tOption: ";
     cin>>option;
@@ -568,14 +563,51 @@ void Librarian(){
             cout<<"\a";
     }
 }
+void Librarian(){
+    int option;
+    intro();
+    cout<<"\n\t\t---------------------------------------";
+    cout<<"\n\t\t\t\tLibrarian Menu\n";
+    cout<<"\n\t\tPress 1 to ISSUE BOOKS";
+    cout<<"\n\t\tPress 2 to RETURN BOOKS";
+    cout<<"\n\t\tPress 3 to VIEW ALL STUDENT";
+    cout<<"\n\t\tPress 4 to UPDATE BOOK RECORDS";
+    cout<<"\n\t\tPress 5 to TO MAIN MENU";
+    cout<<"\n\t\t--------------------------------------\n";
+    cout<<"\n\t\tOption: ";
+    cin>>option;
+
+    switch(option){
+        case 1:
+            system("cls");
+            issue_book();
+            break;
+        case 2:
+            system("cls");
+            book_return();
+            break;
+        case 3:
+            system("cls");
+            display_all_students();
+            break;
+        case 4:
+            system("cls");
+            book_menu();
+            break;
+        case 5:
+            break;
+        default :
+            cout<<"\a";
+    }
+}
 void user(){
     int num;
     intro();
     cout<<"\n\t\t---------------------------------------";
-    cout<<"\n\t\t\tStudent Profile\n";
-    cout<<"\n\t\tPress 1 Info of Student";
-    cout<<"\n\t\tPress 2 List of book";
-    cout<<"\n\t\tPress 3 to back main menu.";
+    cout<<"\n\t\t\tStudent Menu\n";
+    cout<<"\n\t\tPress 1 INFO OF STUDENT";
+    cout<<"\n\t\tPress 2 LIST OF BOOK";
+    cout<<"\n\t\tPress 3 TO MAIN MENU";
     cout<<"\n\t\t---------------------------------------";
     cout<<"\n\t\tOption: ";
     cin>>num;
@@ -600,16 +632,17 @@ void user(){
     }
 
 }
+
 int main(){
     int login;
     for(;;){
         intro();
         cout<<"\n\t\t---------------------------------------";
-        cout<<"\n\t\t\t\tLogIn\n";
-        cout<<"\n\t\tPress 1 LogIn for Admin.";
-        cout<<"\n\t\tPress 2 LogIn for Librarian";
-        cout<<"\n\t\tPress 3 LogIn for Student";
-        cout<<"\n\t\tPress 4 Exit Program";
+        cout<<"\n\t\t\t\tMain Menu\n";
+        cout<<"\n\t\tPress 1  Admin.";
+        cout<<"\n\t\tPress 2  Librarian";
+        cout<<"\n\t\tPress 3  Student";
+        cout<<"\n\t\tPress 4  Exit Program";
         cout<<"\n\t\t---------------------------------------";
         cout<<"\n\t\tOption: ";
         cin>>login;
@@ -617,6 +650,8 @@ int main(){
         switch(login){
         case 1:
             system("cls");
+            admin();
+            break;
         case 2:
             system("cls");
             Librarian();
